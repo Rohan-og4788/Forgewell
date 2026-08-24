@@ -5,7 +5,6 @@ import { z } from 'zod';
 import { toast } from 'sonner';
 import {
   Mail,
-  Lock,
   Eye,
   EyeOff,
   Loader2,
