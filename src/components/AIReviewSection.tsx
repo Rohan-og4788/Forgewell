@@ -107,7 +107,7 @@ export async function authenticateUser(req: Request) {
 }`;
 
   return (
-    <section id="ai-tools" className="py-24 relative overflow-hidden bg-[#07090d]">
+    <section id="ai-tools" className="py-24 relative overflow-hidden bg-page">
       {/* Background radial gradients */}
       <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[700px] h-[500px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute top-1/3 right-10 w-[500px] h-[400px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
@@ -120,20 +120,20 @@ export async function authenticateUser(req: Request) {
             <Bot className="w-3.5 h-3.5" />
             <span>Interactive AI Code Reviewer</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-fg tracking-tight">
             Ask AI to review, refactor & harden your codebase.
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-400">
+          <p className="mt-4 text-base sm:text-lg text-muted">
             Powered by high-reasoning AST code intelligence. Discover security vulnerabilities, architectural bottlenecks, and zero-day regressions before they reach your main branch.
           </p>
         </div>
 
         {/* Big Interactive IDE + AI Chat Section */}
         <div className="mt-14 max-w-6xl mx-auto rounded-2xl p-[1px] bg-gradient-to-b from-cyan-500/30 via-slate-800/60 to-slate-900 shadow-2xl shadow-cyan-950/50">
-          <div className="bg-[#0b0e14] rounded-2xl overflow-hidden border border-slate-800">
+          <div className="bg-surface rounded-2xl overflow-hidden border border-line shadow-sm">
             
             {/* Top Toolbar */}
-            <div className="px-5 py-3 bg-[#0d121c] border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+            <div className="px-5 py-3 bg-elevated border-b border-line flex flex-wrap items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-1.5">
                   <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block" />
@@ -185,7 +185,7 @@ export async function authenticateUser(req: Request) {
             <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-slate-800">
               
               {/* Left Column: AI Chat Conversation */}
-              <div className="lg:col-span-5 p-5 bg-[#090b10] flex flex-col justify-between space-y-4">
+              <div className="lg:col-span-5 p-5 bg-elevated/50 flex flex-col justify-between space-y-4">
                 
                 <div className="space-y-4">
                   {/* User Query Bubble */}
@@ -218,7 +218,7 @@ export async function authenticateUser(req: Request) {
                           <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                           AI Developer Bot (v2.4 AST)
                         </span>
-                        <span className="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-mono text-muted bg-slate-800 px-2 py-0.5 rounded">
                           Response time: 0.8s
                         </span>
                       </div>
@@ -240,14 +240,14 @@ export async function authenticateUser(req: Request) {
                             }`}
                           >
                             <div className="flex items-center justify-between">
-                              <span className="font-semibold text-white text-xs">
+                              <span className="font-semibold text-fg text-xs">
                                 {issue.title}
                               </span>
                               <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${issue.badgeClass}`}>
                                 {issue.severity}
                               </span>
                             </div>
-                            <p className="mt-1 text-[11px] text-slate-400">
+                            <p className="mt-1 text-[11px] text-muted">
                               {issue.description}
                             </p>
                           </div>
@@ -260,7 +260,7 @@ export async function authenticateUser(req: Request) {
                           <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                           Auto-patch ready to apply
                         </span>
-                        <span className="font-mono text-[10px] text-slate-400">+12 / -7 LOC</span>
+                        <span className="font-mono text-[10px] text-muted">+12 / -7 LOC</span>
                       </div>
                     </div>
                   </motion.div>
@@ -272,7 +272,7 @@ export async function authenticateUser(req: Request) {
                     type="text"
                     readOnly
                     value="Ask follow-up question or instruct refactor..."
-                    className="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-400 pr-10 focus:outline-none"
+                    className="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-muted pr-10 focus:outline-none"
                   />
                   <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400 transition-colors">
                     <Send className="w-3.5 h-3.5" />
@@ -282,13 +282,13 @@ export async function authenticateUser(req: Request) {
               </div>
 
               {/* Right Column: Code Snippet & Live Patch Diff */}
-              <div className="lg:col-span-7 p-5 bg-[#07090d] flex flex-col justify-between">
+              <div className="lg:col-span-7 p-5 bg-page flex flex-col justify-between">
                 
                 <div>
                   {/* Code Editor Header */}
                   <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-mono font-medium text-slate-400">
+                      <span className="text-xs font-mono font-medium text-muted">
                         Language: TypeScript
                       </span>
                       <span className={`text-[10px] font-mono px-2 py-0.5 rounded ${
@@ -300,7 +300,7 @@ export async function authenticateUser(req: Request) {
 
                     <button
                       onClick={handleCopyCode}
-                      className="text-xs font-mono text-slate-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1 rounded bg-slate-900 border border-slate-800 cursor-pointer"
+                      className="text-xs font-mono text-muted hover:text-fg flex items-center gap-1 transition-colors px-2 py-1 rounded bg-elevated border border-line cursor-pointer"
                     >
                       {copied ? (
                         <>
@@ -341,10 +341,10 @@ export async function authenticateUser(req: Request) {
                     <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                   </div>
                   <div className="flex-1">
-                    <div className="font-semibold text-white">
+                    <div className="font-semibold text-fg">
                       Selected Recommendation ({issues[selectedIssue].title}):
                     </div>
-                    <p className="mt-1 text-slate-400 leading-normal">
+                    <p className="mt-1 text-muted leading-normal">
                       {issues[selectedIssue].recommendation}
                     </p>
                   </div>

@@ -34,7 +34,7 @@ export const Features: React.FC = () => {
     : FEATURES_DATA.filter((f) => f.category === selectedCategory);
 
   return (
-    <section id="features" className="py-24 relative overflow-hidden bg-[#08090d]">
+    <section id="features" className="py-24 relative overflow-hidden bg-page">
       {/* Ambient background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-cyan-900/10 rounded-full blur-[140px] pointer-events-none" />
 
@@ -46,10 +46,10 @@ export const Features: React.FC = () => {
             <Sparkles className="w-3.5 h-3.5" />
             <span>Power-Packed Feature Suite</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-fg tracking-tight">
             Engineered for the modern developer lifecycle.
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-400">
+          <p className="mt-4 text-base sm:text-lg text-muted">
             From your first git commit to code review, deployment, portfolio generation, and team pair-programming. Everything in one unified, AI-augmented workspace.
           </p>
         </div>
@@ -69,7 +69,7 @@ export const Features: React.FC = () => {
               className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                 selectedCategory === cat.key
                   ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/25 scale-105'
-                  : 'bg-slate-900/80 text-slate-400 hover:text-white border border-slate-800/80 hover:border-slate-700'
+                  : 'bg-surface text-muted hover:text-fg border border-line'
               }`}
             >
               {cat.label}
@@ -108,12 +108,12 @@ export const Features: React.FC = () => {
                   </div>
 
                   {/* Title & Description */}
-                  <h3 className="mt-5 text-lg font-bold text-white group-hover:text-cyan-300 transition-colors flex items-center justify-between">
+                  <h3 className="mt-5 text-lg font-bold text-fg group-hover:text-cyan-600 dark:group-hover:text-cyan-300 transition-colors flex items-center justify-between">
                     <span>{feature.title}</span>
                     <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-cyan-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all opacity-0 group-hover:opacity-100" />
                   </h3>
 
-                  <p className="mt-2.5 text-sm text-slate-400 leading-relaxed">
+                  <p className="mt-2.5 text-sm text-muted leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

@@ -30,7 +30,7 @@ export function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#08090d] text-slate-100 flex flex-col selection:bg-cyan-500/20 selection:text-cyan-300">
+    <div className="min-h-screen bg-page text-fg flex flex-col">
       <Navbar onOpenAuth={handleOpenAuth} />
       <main className="flex-1">
         <Hero onOpenAuth={handleOpenAuth} />

@@ -29,12 +29,12 @@ export const SocialProof: React.FC = () => {
   ];
 
   return (
-    <section className="py-14 border-y border-slate-800/80 bg-[#07080c]/80 relative overflow-hidden">
+    <section className="py-14 border-y border-line bg-elevated/70 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Title */}
         <div className="text-center">
-          <p className="text-xs uppercase tracking-[0.25em] font-semibold text-slate-400">
+          <p className="text-xs uppercase tracking-[0.25em] font-semibold text-muted">
             Built for modern developers & engineering teams worldwide
           </p>
         </div>
@@ -50,7 +50,7 @@ export const SocialProof: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: idx * 0.05 }}
-                className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors duration-200 cursor-default group"
+                className="flex items-center gap-2 text-muted hover:text-fg transition-colors duration-200 cursor-default group"
               >
                 <div className="w-7 h-7 rounded-lg bg-slate-800/70 border border-slate-700/60 flex items-center justify-center group-hover:border-cyan-500/40 group-hover:text-cyan-400 transition-colors">
                   <Icon className="w-4 h-4" />
@@ -77,7 +77,7 @@ export const SocialProof: React.FC = () => {
               <div className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-300 font-mono">
                 {stat.value}
               </div>
-              <div className="text-xs text-slate-400 mt-1 font-medium">
+              <div className="text-xs text-muted mt-1 font-medium">
                 {stat.label}
               </div>
             </motion.div>

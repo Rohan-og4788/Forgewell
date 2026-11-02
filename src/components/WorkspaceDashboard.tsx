@@ -36,7 +36,7 @@ export const WorkspaceDashboard: React.FC = () => {
   ];
 
   return (
-    <section id="workspace" className="py-24 relative overflow-hidden bg-[#08090d] border-t border-slate-900">
+    <section id="workspace" className="py-24 relative overflow-hidden bg-page border-t border-line">
       {/* Glow */}
       <div className="absolute top-1/2 right-1/4 w-[600px] h-[400px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none" />
 
@@ -48,10 +48,10 @@ export const WorkspaceDashboard: React.FC = () => {
             <Server className="w-3.5 h-3.5" />
             <span>Unified Command Center</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-fg tracking-tight">
             Developer Workspace
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-400">
+          <p className="mt-4 text-base sm:text-lg text-muted">
             A single cockpit for all your active projects, connected GitHub repositories, automated AI code reviews, edge deployments, and live analytics.
           </p>
         </div>
@@ -60,19 +60,19 @@ export const WorkspaceDashboard: React.FC = () => {
         <div className="mt-14 max-w-6xl mx-auto rounded-2xl bg-slate-950/80 border border-slate-800 shadow-2xl overflow-hidden">
           
           {/* Top Workspace Header Bar */}
-          <div className="p-4 sm:p-5 bg-[#0e121a] border-b border-slate-800 flex flex-wrap items-center justify-between gap-4">
+          <div className="p-4 sm:p-5 bg-elevated border-b border-line flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
                 <FolderGit2 className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <h3 className="text-sm font-bold text-fg flex items-center gap-2">
                   DevHub Studio Workspace
                   <span className="text-[10px] font-mono bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full border border-emerald-500/30">
                     Active Session
                   </span>
                 </h3>
-                <p className="text-xs text-slate-400">Connected to 18 GitHub Repositories • 3 Cloud Clusters</p>
+                <p className="text-xs text-muted">Connected to 18 GitHub Repositories • 3 Cloud Clusters</p>
               </div>
             </div>
 
@@ -91,7 +91,7 @@ export const WorkspaceDashboard: React.FC = () => {
                   className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     activeTab === tab.id
                       ? 'bg-cyan-500 text-slate-950 font-bold shadow-sm'
-                      : 'text-slate-400 hover:text-white'
+                      : 'text-muted hover:text-fg'
                   }`}
                 >
                   {tab.label}
@@ -101,13 +101,13 @@ export const WorkspaceDashboard: React.FC = () => {
           </div>
 
           {/* Dashboard Body Grid */}
-          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 bg-[#090b10]">
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 bg-surface">
             
             {/* 1. Projects Section */}
             {(activeTab === 'all' || activeTab === 'projects') && (
               <div className="lg:col-span-6 rounded-xl p-5 bg-slate-900/60 border border-slate-800/80 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                  <div className="flex items-center gap-2 text-sm font-bold text-fg">
                     <FolderGit2 className="w-4 h-4 text-cyan-400" />
                     <span>Active Projects</span>
                   </div>
@@ -121,7 +121,7 @@ export const WorkspaceDashboard: React.FC = () => {
                     <div key={proj.name} className="p-3 rounded-lg bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between">
                       <div>
                         <div className="text-xs font-mono font-bold text-slate-200">{proj.name}</div>
-                        <div className="text-[11px] text-slate-400 mt-0.5">{proj.framework} • branch: {proj.branch}</div>
+                        <div className="text-[11px] text-muted mt-0.5">{proj.framework} • branch: {proj.branch}</div>
                       </div>
                       <div className="text-right">
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
@@ -139,7 +139,7 @@ export const WorkspaceDashboard: React.FC = () => {
             {(activeTab === 'all' || activeTab === 'repos') && (
               <div className="lg:col-span-6 rounded-xl p-5 bg-slate-900/60 border border-slate-800/80 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                  <div className="flex items-center gap-2 text-sm font-bold text-fg">
                     <GitBranch className="w-4 h-4 text-purple-400" />
                     <span>GitHub Repositories</span>
                   </div>
@@ -153,9 +153,9 @@ export const WorkspaceDashboard: React.FC = () => {
                     <div key={repo.name} className="p-3 rounded-lg bg-slate-950/70 border border-slate-800 hover:border-slate-700 transition-colors flex items-center justify-between">
                       <div>
                         <div className="text-xs font-mono font-bold text-slate-200">{repo.name}</div>
-                        <div className="text-[11px] text-slate-400 mt-0.5">{repo.language} • {repo.visibility}</div>
+                        <div className="text-[11px] text-muted mt-0.5">{repo.language} • {repo.visibility}</div>
                       </div>
-                      <div className="text-right text-xs text-slate-400 font-mono">
+                      <div className="text-right text-xs text-muted font-mono">
                         <span className="text-cyan-400">★ {repo.stars}</span>
                         <span className="ml-2 text-slate-500">PRs: {repo.openPrs}</span>
                       </div>
@@ -169,7 +169,7 @@ export const WorkspaceDashboard: React.FC = () => {
             {(activeTab === 'all' || activeTab === 'reviews') && (
               <div className="lg:col-span-6 rounded-xl p-5 bg-slate-900/60 border border-slate-800/80 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                  <div className="flex items-center gap-2 text-sm font-bold text-fg">
                     <ShieldCheck className="w-4 h-4 text-cyan-400" />
                     <span>Recent AI Reviews</span>
                   </div>
@@ -197,7 +197,7 @@ export const WorkspaceDashboard: React.FC = () => {
             {(activeTab === 'all' || activeTab === 'deployments') && (
               <div className="lg:col-span-6 rounded-xl p-5 bg-slate-900/60 border border-slate-800/80 space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm font-bold text-white">
+                  <div className="flex items-center gap-2 text-sm font-bold text-fg">
                     <Zap className="w-4 h-4 text-emerald-400" />
                     <span>Edge Deployments</span>
                   </div>
@@ -230,22 +230,22 @@ export const WorkspaceDashboard: React.FC = () => {
                   <BarChart3 className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-white">Developer Velocity & Code Quality Index</div>
-                  <div className="text-xs text-slate-400">Engineering sprint cycle time decreased by 42% over last 30 days</div>
+                  <div className="text-sm font-bold text-fg">Developer Velocity & Code Quality Index</div>
+                  <div className="text-xs text-muted">Engineering sprint cycle time decreased by 42% over last 30 days</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-6">
                 <div className="text-center">
-                  <div className="text-xs text-slate-400">PR Merge Time</div>
+                  <div className="text-xs text-muted">PR Merge Time</div>
                   <div className="text-sm font-bold font-mono text-emerald-400">18 min (avg)</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs text-slate-400">Test Coverage</div>
+                  <div className="text-xs text-muted">Test Coverage</div>
                   <div className="text-sm font-bold font-mono text-cyan-400">96.4%</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-xs text-slate-400">Bug Catch Rate</div>
+                  <div className="text-xs text-muted">Bug Catch Rate</div>
                   <div className="text-sm font-bold font-mono text-purple-400">99.1%</div>
                 </div>
               </div>

@@ -5,7 +5,7 @@ import { TESTIMONIALS_DATA } from '../data/landingData';
 
 export const Testimonials: React.FC = () => {
   return (
-    <section className="py-24 relative overflow-hidden bg-[#06070a] border-t border-slate-900">
+    <section className="py-24 relative overflow-hidden bg-page border-t border-line">
       {/* Glow */}
       <div className="absolute top-1/2 left-1/3 w-[600px] h-[400px] bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none" />
 
@@ -17,10 +17,10 @@ export const Testimonials: React.FC = () => {
             <Quote className="w-3.5 h-3.5" />
             <span>Developer Reviews</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-fg tracking-tight">
             Loved by engineers shipping at the speed of thought.
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-400">
+          <p className="mt-4 text-base sm:text-lg text-muted">
             See how developers at top tier startups and scaleups streamline their reviews and showcase their engineering profiles.
           </p>
         </div>
@@ -65,11 +65,11 @@ export const Testimonials: React.FC = () => {
                     className="w-10 h-10 rounded-full object-cover border border-slate-700"
                   />
                   <div>
-                    <div className="text-sm font-bold text-white flex items-center gap-1">
+                    <div className="text-sm font-bold text-fg flex items-center gap-1">
                       {t.name}
                       <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
                     </div>
-                    <div className="text-xs text-slate-400">{t.role} • {t.company}</div>
+                    <div className="text-xs text-muted">{t.role} • {t.company}</div>
                     <div className="text-[11px] font-mono text-slate-500">{t.handle}</div>
                   </div>
                 </div>

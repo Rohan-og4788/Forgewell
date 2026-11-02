@@ -11,7 +11,7 @@ export const FAQ: React.FC = () => {
   };
 
   return (
-    <section id="faq" className="py-24 relative overflow-hidden bg-[#08090d]">
+    <section id="faq" className="py-24 relative overflow-hidden bg-page">
       {/* Background ambient lighting */}
       <div className="absolute top-1/2 right-1/3 w-[600px] h-[400px] bg-indigo-600/10 rounded-full blur-[140px] pointer-events-none" />
 
@@ -23,10 +23,10 @@ export const FAQ: React.FC = () => {
             <HelpCircle className="w-3.5 h-3.5" />
             <span>Frequently Asked Questions</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-fg tracking-tight">
             Got questions? We've got answers.
           </h2>
-          <p className="mt-4 text-base sm:text-lg text-slate-400">
+          <p className="mt-4 text-base sm:text-lg text-muted">
             Everything you need to know about AI Developer Hub, integrations, portfolios, and security.
           </p>
         </div>
@@ -41,8 +41,8 @@ export const FAQ: React.FC = () => {
                 key={item.id}
                 className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
                   isOpen
-                    ? 'bg-slate-900/90 border-cyan-500/50 shadow-xl shadow-cyan-950/20'
-                    : 'bg-slate-950/70 border-slate-800/80 hover:border-slate-700'
+                    ? 'bg-surface border-cyan-500/50 shadow-sm'
+                    : 'bg-surface border-line hover:border-muted'
                 }`}
               >
                 <button
@@ -50,17 +50,17 @@ export const FAQ: React.FC = () => {
                   className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-slate-800 text-cyan-400 border border-slate-700">
+                    <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-elevated text-cyan-700 dark:text-cyan-400 border border-line">
                       {item.category}
                     </span>
-                    <span className="text-base sm:text-lg font-bold text-white">
+                    <span className="text-base sm:text-lg font-bold text-fg">
                       {item.question}
                     </span>
                   </div>
 
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-200 ${
-                      isOpen ? 'rotate-180 bg-cyan-500/20 text-cyan-400' : 'bg-slate-800 text-slate-400'
+                      isOpen ? 'rotate-180 bg-cyan-500/20 text-cyan-600' : 'bg-elevated text-muted'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -75,7 +75,7 @@ export const FAQ: React.FC = () => {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25 }}
                     >
-                      <div className="px-5 pb-6 sm:px-6 text-sm text-slate-300 leading-relaxed border-t border-slate-800/60 pt-4">
+                      <div className="px-5 pb-6 sm:px-6 text-sm text-muted leading-relaxed border-t border-line pt-4">
                         {item.answer}
                       </div>
                     </motion.div>
