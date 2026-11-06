@@ -1,32 +1,69 @@
-# React + TypeScript + Vite
+# Forgewell
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Forgewell is a developer workspace for managing projects, connecting GitHub repositories, getting AI-assisted code reviews, and building documentation, resumes, and portfolios.
 
-Currently, two official plugins are available:
+## Getting started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Requirements
 
-## React Compiler
+- Node.js 22 or later
+- npm
+- A PostgreSQL database for the backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Install and configure
 
-## Expanding the Oxlint configuration
+1. Install dependencies:
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+   ```sh
+   npm install
+   ```
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+2. Copy `.env.example` to `.env` and configure the database connection and any integrations you plan to use. See [BACKEND_SETUP.md](./BACKEND_SETUP.md) for configuration details.
+3. Generate the Prisma client:
+
+   ```sh
+   npm run prisma:generate
+   ```
+
+4. Start the backend and frontend in separate terminals:
+
+   ```sh
+   npm run server:dev
+   ```
+
+   ```sh
+   npm run dev
+   ```
+
+The backend runs at `http://localhost:3001`; Vite prints the frontend URL when it starts.
+
+## Development test login
+
+For local development or automated testing, the backend provides a demo login at `GET` or `POST /api/auth/test-login`. It creates or reuses a sample account and sets an HTTP-only session cookie. The default role is `USER`; request an admin session with `GET /api/auth/test-login?role=ADMIN` or send `{"role":"ADMIN"}` in a `POST` request body.
+
+The standard login form can also use these demo credentials:
+
+| Account | Email | Password |
+|---|---|---|
+| User | `test@forgewell.ai` | `password123` |
+| Admin | `admin@forgewell.ai` | `admin123` |
+
+These demo login and auto-provisioning flows are disabled when `NODE_ENV=production`. To create the sample accounts ahead of time in a development database, run:
+
+```sh
+npm run seed:test-user
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Useful commands
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the Vite frontend |
+| `npm run server:dev` | Start the backend in development mode |
+| `npm run build` | Typecheck and build the frontend |
+| `npm run lint` | Run Oxlint |
+| `npm run typecheck:server` | Typecheck the backend |
+| `npm run test:backend` | Run backend verification tests |
+| `npm run prisma:generate` | Generate the Prisma client |
+
+For backend architecture, API endpoints, and environment configuration, see [BACKEND_SETUP.md](./BACKEND_SETUP.md).
