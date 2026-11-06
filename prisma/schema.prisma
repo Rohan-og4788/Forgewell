@@ -1,0 +1,391 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+  MAINTAINER
+}
+
+enum Visibility {
+  PUBLIC
+  PRIVATE
+  UNLISTED
+}
+
+enum ProjectStatus {
+  ACTIVE
+  IN_PROGRESS
+  COMPLETED
+  ARCHIVED
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum ReviewStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum DocType {
+  README
+  API_DOC
+  ARCHITECTURE
+  CODE_EXPLANATION
+  PROJECT_SUMMARY
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum NotificationType {
+  INFO
+  SUCCESS
+  WARNING
+  ERROR
+  GITHUB
+  REVIEW
+  SYSTEM
+}
+
+enum PlanTier {
+  FREE
+  PRO
+  ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  CANCELED
+  PAST_DUE
+  TRIALING
+}
+
+enum TeamRole {
+  OWNER
+  ADMIN
+  MEMBER
+  VIEWER
+}
+
+model User {
+  id              String             @id @default(uuid())
+  supabaseUid     String?            @unique
+  email           String             @unique
+  passwordHash    String?
+  name            String?
+  role            Role               @default(USER)
+  isVerified      Boolean            @default(false)
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  profile         UserProfile?
+  projects        Project[]
+  github          GitHubIntegration?
+  aiConversations AIConversation[]
+  codeReviews     CodeReview[]
+  documentations  Documentation[]
+  resumes         Resume[]
+  portfolios      Portfolio[]
+  blogs           Blog[]
+  notifications   Notification[]
+  subscription    Subscription?
+  ownedTeams      Team[]             @relation("TeamOwner")
+  teamMemberships TeamMember[]
+  activityLogs    ActivityLog[]
+
+  @@index([email])
+  @@index([supabaseUid])
+}
+
+model UserProfile {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  avatarUrl       String?
+  bio             String?
+  title           String?
+  company         String?
+  location        String?
+  website         String?
+  githubUsername  String?
+  twitterUsername String?
+  linkedinUrl     String?
+  skills          String[] @default([])
+  preferences     Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Project {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamId        String?
+  team          Team?         @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  name          String
+  slug          String
+  description   String?
+  framework     String?
+  visibility    Visibility    @default(PUBLIC)
+  status        ProjectStatus @default(ACTIVE)
+  repositoryUrl String?
+  liveDemoUrl   String?
+  coverImageUrl String?
+  starsCount    Int           @default(0)
+  forksCount    Int           @default(0)
+  qualityScore  Int?
+  tags          String[]      @default([])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  codeReviews    CodeReview[]
+  documentations Documentation[]
+
+  @@unique([userId, slug])
+  @@index([userId])
+  @@index([visibility])
+  @@index([status])
+}
+
+model GitHubIntegration {
+  id                   String    @id @default(uuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  githubUserId         String
+  githubUsername       String
+  avatarUrl            String?
+  profileUrl           String?
+  encryptedAccessToken String
+  encryptedRefreshToken String?
+  tokenExpiresAt       DateTime?
+  scope                String?
+  lastSyncedAt         DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@index([githubUsername])
+}
+
+model AIConversation {
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String      @default("New Conversation")
+  model        String      @default("gpt-4o")
+  systemPrompt String?
+  tokenUsage   Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  messages     AIMessage[]
+
+  @@index([userId, updatedAt])
+}
+
+model AIMessage {
+  id             String         @id @default(uuid())
+  conversationId String
+  conversation   AIConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           MessageRole
+  content        String
+  tokens         Int?
+  metadata       Json?
+  createdAt      DateTime       @default(now())
+
+  @@index([conversationId, createdAt])
+}
+
+model CodeReview {
+  id           String       @id @default(uuid())
+  userId       String
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId    String?
+  project      Project?     @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  title        String
+  language     String
+  codeSnippet  String
+  score        Int          @default(100)
+  status       ReviewStatus @default(COMPLETED)
+  summary      String
+  issues       Json
+  suggestions  String[]     @default([])
+  fixedCode    String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([projectId])
+}
+
+model Documentation {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  title     String
+  docType   DocType  @default(README)
+  content   String
+  format    String   @default("markdown")
+  metadata  Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId, createdAt])
+  @@index([projectId])
+}
+
+model Resume {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String   @default("My Resume")
+  personalInfo   Json
+  education      Json     @default("[]")
+  experience     Json     @default("[]")
+  skills         Json     @default("[]")
+  certifications Json     @default("[]")
+  projects       Json     @default("[]")
+  pdfUrl         String?
+  isPrimary      Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, createdAt])
+}
+
+model Portfolio {
+  id               String   @id @default(uuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title            String
+  slug             String   @unique
+  bio              String?
+  theme            String   @default("modern-dark")
+  sections         Json     @default("[]")
+  featuredProjects Json     @default("[]")
+  isPublished      Boolean  @default(false)
+  viewCount        Int      @default(0)
+  customDomain     String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+  @@index([slug])
+  @@index([isPublished])
+}
+
+model Blog {
+  id          String     @id @default(uuid())
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  slug        String     @unique
+  content     String
+  excerpt     String?
+  coverImage  String?
+  status      BlogStatus @default(DRAFT)
+  tags        String[]   @default([])
+  publishedAt DateTime?
+  viewCount   Int        @default(0)
+  readTime    Int        @default(3)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([slug])
+  @@index([status, publishedAt])
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      NotificationType @default(INFO)
+  isRead    Boolean          @default(false)
+  link      String?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, isRead, createdAt])
+}
+
+model Subscription {
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan                 PlanTier           @default(FREE)
+  status               SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart   DateTime           @default(now())
+  currentPeriodEnd     DateTime?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+}
+
+model Team {
+  id          String       @id @default(uuid())
+  name        String
+  slug        String       @unique
+  ownerId     String
+  owner       User         @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  description String?
+  avatarUrl   String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  members     TeamMember[]
+  projects    Project[]
+
+  @@index([ownerId])
+  @@index([slug])
+}
+
+model TeamMember {
+  id       String   @id @default(uuid())
+  teamId   String
+  team     Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role     TeamRole @default(MEMBER)
+  joinedAt DateTime @default(now())
+
+  @@unique([teamId, userId])
+  @@index([userId])
+  @@index([teamId])
+}
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action      String
+  entityType  String
+  entityId    String?
+  description String
+  metadata    Json?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([entityType, entityId])
+}

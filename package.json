@@ -7,7 +7,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "server:dev": "node --experimental-strip-types server/index.ts",
+    "server:start": "node --experimental-strip-types server/index.ts",
+    "test:backend": "node --experimental-strip-types server/tests/run_tests.ts",
+    "prisma:generate": "prisma generate",
+    "typecheck:server": "tsc -p tsconfig.server.json"
   },
   "dependencies": {
     "@prisma/client": "^7.10.0",
