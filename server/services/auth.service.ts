@@ -3,6 +3,7 @@ import { getSupabaseClient, getSupabaseAdmin } from '../lib/supabase.ts';
 import { hashPassword, verifyPassword } from '../lib/crypto.ts';
 import { logger } from '../lib/logger.ts';
 import { type Role } from '@prisma/client';
+import { env } from '../config/env.ts';
 
 export interface RegisterDTO {
   email: string;
@@ -106,6 +107,13 @@ export class AuthService {
   async login(data: LoginDTO) {
     const email = data.email.toLowerCase();
 
+    if (
+      env.NODE_ENV === 'production' &&
+      (email === 'test@forgewell.ai' || email === 'admin@forgewell.ai')
+    ) {
+      throw new Error('Invalid email or password');
+    }
+
     // 1. Try Supabase Auth first
     try {
       const supabase = getSupabaseClient();
@@ -164,10 +172,23 @@ export class AuthService {
     }
 
     // 2. Fallback: Verify password hash against database
-    const dbUser = await prisma.user.findUnique({
+    let dbUser = await prisma.user.findUnique({
       where: { email },
       include: { profile: true, subscription: true },
     });
+
+    // Auto-provision test account if using standard demo credentials
+    if (
+      env.NODE_ENV !== 'production' &&
+      !dbUser &&
+      (email === 'test@forgewell.ai' || email === 'admin@forgewell.ai')
+    ) {
+      const isTestMatch = (email === 'test@forgewell.ai' && data.password === 'password123') ||
+                          (email === 'admin@forgewell.ai' && data.password === 'admin123');
+      if (isTestMatch) {
+        return this.testLogin(email === 'admin@forgewell.ai' ? 'ADMIN' : 'USER');
+      }
+    }
 
     if (!dbUser || !dbUser.passwordHash) {
       throw new Error('Invalid email or password');
@@ -200,6 +221,126 @@ export class AuthService {
         isVerified: dbUser.isVerified,
         profile: dbUser.profile,
         subscription: dbUser.subscription,
+      },
+    };
+  }
+
+  /**
+   * Quick Test / Demo Login
+   * Generates or retrieves a pre-configured developer test user
+   * with complete workspace data (projects, reviews, activity).
+   */
+  async testLogin(role: 'USER' | 'ADMIN' = 'USER') {
+    if (env.NODE_ENV === 'production') {
+      throw new Error('Test login is disabled in production');
+    }
+
+    const testEmail = role === 'ADMIN' ? 'admin@forgewell.ai' : 'test@forgewell.ai';
+    const testName = role === 'ADMIN' ? 'Forgewell Admin' : 'Demo Developer';
+    const password = role === 'ADMIN' ? 'admin123' : 'password123';
+
+    let user = await prisma.user.findUnique({
+      where: { email: testEmail },
+      include: { profile: true, subscription: true },
+    });
+
+    if (!user) {
+      const passwordHash = await hashPassword(password);
+      user = await prisma.user.create({
+        data: {
+          email: testEmail,
+          name: testName,
+          passwordHash,
+          role,
+          isVerified: true,
+          profile: {
+            create: {
+              title: role === 'ADMIN' ? 'Principal Platform Architect' : 'Senior Full-Stack Engineer',
+              bio: 'Testing and demonstration account for Forgewell workspace.',
+              company: 'Forgewell Labs',
+              location: 'San Francisco, CA',
+              skills: ['TypeScript', 'Node.js', 'PostgreSQL', 'Prisma', 'React', 'Docker'],
+              githubUsername: 'forgewell-tester',
+            },
+          },
+          subscription: {
+            create: {
+              plan: role === 'ADMIN' ? 'ENTERPRISE' : 'PRO',
+              status: 'ACTIVE',
+            },
+          },
+          projects: {
+            create: [
+              {
+                name: 'hyper-vector-engine',
+                slug: 'hyper-vector-engine',
+                description: 'High-performance vector database indexing engine built in Rust and WebAssembly.',
+                framework: 'Rust / WASM',
+                visibility: 'PUBLIC',
+                status: 'ACTIVE',
+                starsCount: 1420,
+                forksCount: 128,
+                qualityScore: 98,
+                tags: ['Rust', 'WASM', 'Vectors', 'AI'],
+              },
+              {
+                name: 'synapse-copilot-ui',
+                slug: 'synapse-copilot-ui',
+                description: 'Next-generation AI code companion UI with streaming syntax highlighting.',
+                framework: 'Next.js 15',
+                visibility: 'PUBLIC',
+                status: 'ACTIVE',
+                starsCount: 840,
+                forksCount: 64,
+                qualityScore: 94,
+                tags: ['Next.js', 'TypeScript', 'Tailwind', 'AI'],
+              },
+            ],
+          },
+          notifications: {
+            create: [
+              {
+                title: 'Welcome to Forgewell',
+                message: 'Your testing account has been initialized with sample projects and metrics.',
+                type: 'SYSTEM',
+              },
+            ],
+          },
+          activityLogs: {
+            create: [
+              {
+                action: 'TEST_LOGIN_INITIALIZED',
+                entityType: 'auth',
+                description: `Test login session initiated for ${testEmail}`,
+              },
+            ],
+          },
+        },
+        include: { profile: true, subscription: true },
+      });
+    }
+
+    const token = `usr_${user.id}`;
+
+    await prisma.activityLog.create({
+      data: {
+        userId: user.id,
+        action: 'TEST_LOGIN',
+        entityType: 'auth',
+        description: `Logged in via test login (${role})`,
+      },
+    });
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        isVerified: user.isVerified,
+        profile: user.profile,
+        subscription: user.subscription,
       },
     };
   }

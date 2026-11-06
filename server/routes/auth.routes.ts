@@ -5,6 +5,7 @@ import { applyRateLimit } from '../middleware/rateLimit.ts';
 import { parseJsonBody } from '../middleware/validate.ts';
 import { jsonResponse, errorResponse } from '../lib/response.ts';
 import { handleRouteError } from '../middleware/errorHandler.ts';
+import { env } from '../config/env.ts';
 
 const registerSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -52,6 +53,49 @@ export async function handleLogin(req: Request): Promise<Response> {
     return jsonResponse(result, 200);
   } catch (err: any) {
     return errorResponse(err.message || 'Invalid credentials', 401, 'UNAUTHORIZED');
+  }
+}
+
+export async function handleTestLogin(req: Request): Promise<Response> {
+  if (env.NODE_ENV === 'production') {
+    return errorResponse('Not found', 404, 'NOT_FOUND');
+  }
+
+  const rateLimitError = applyRateLimit(req, { limit: 30, identifier: 'auth_test_login' });
+  if (rateLimitError) return rateLimitError;
+
+  let role: 'USER' | 'ADMIN' = 'USER';
+  const url = new URL(req.url);
+  const queryRole = url.searchParams.get('role');
+  if (queryRole === 'ADMIN') {
+    role = 'ADMIN';
+  } else if (req.method === 'POST') {
+    try {
+      const text = await req.text();
+      if (text) {
+        const body = JSON.parse(text);
+        if (body.role === 'ADMIN') role = 'ADMIN';
+      }
+    } catch {
+      // Default to USER
+    }
+  }
+
+  try {
+    const result = await authService.testLogin(role);
+    return jsonResponse(
+      {
+        message: 'Signed in with testing account successfully',
+        ...result,
+      },
+      200,
+      undefined,
+      {
+        'Set-Cookie': `forgewell_token=${result.token}; Path=/; HttpOnly; SameSite=Lax; Max-Age=604800`,
+      }
+    );
+  } catch (err) {
+    return handleRouteError(err, 'Test login error');
   }
 }
 

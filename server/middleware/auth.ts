@@ -110,8 +110,9 @@ export async function authenticateRequest(
 
     // 2. Fallback: Check if token is a direct local session token / Bearer user ID for test or local dev
     if (token.startsWith('usr_') || token.startsWith('test_')) {
+      const cleanId = token.replace(/^(usr_|test_)/, '');
       const dbUser = await prisma.user.findUnique({
-        where: { id: token.replace('test_', '') },
+        where: { id: cleanId },
       });
       if (dbUser) {
         return {

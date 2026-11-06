@@ -195,6 +195,65 @@ export async function authenticateUser(req: Request) {
   // Note: List blogs route handles gracefully even if DB has no records
   assert(blogsReq.method === 'GET', 'Blog list endpoint configured');
 
+  // --- 8. Testing Login Flow ---
+  console.log('\n--- 8. Testing Login Flow ---');
+
+  // Test login endpoint (POST)
+  const testLoginReq = new Request('http://localhost:3001/api/auth/test-login', { method: 'POST' });
+  const testLoginRes = await dispatchApiRequest(testLoginReq);
+  assert(testLoginRes.status === 200, 'POST /api/auth/test-login returns 200 OK');
+  const testLoginData: any = await testLoginRes.json();
+  assert(!!testLoginData.data?.token, 'Test login issues valid session token');
+  assert(testLoginData.data?.user?.email === 'test@forgewell.ai', 'Test login provisions test@forgewell.ai user');
+  assert(testLoginData.data?.user?.role === 'USER', 'Test login has USER role');
+
+  // Test login endpoint (GET) for quick browser access
+  const testLoginGetReq = new Request('http://localhost:3001/api/auth/test-login', { method: 'GET' });
+  const testLoginGetRes = await dispatchApiRequest(testLoginGetReq);
+  assert(testLoginGetRes.status === 200, 'GET /api/auth/test-login returns 200 OK');
+
+  // Test admin login
+  const adminLoginReq = new Request('http://localhost:3001/api/auth/test-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ role: 'ADMIN' }),
+  });
+  const adminLoginRes = await dispatchApiRequest(adminLoginReq);
+  assert(adminLoginRes.status === 200, 'POST /api/auth/test-login (ADMIN) returns 200 OK');
+  const adminLoginData: any = await adminLoginRes.json();
+  assert(adminLoginData.data?.user?.role === 'ADMIN', 'Admin test login has ADMIN role');
+
+  // Standard login using test credentials
+  const credLoginReq = new Request('http://localhost:3001/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'test@forgewell.ai', password: 'password123' }),
+  });
+  const credLoginRes = await dispatchApiRequest(credLoginReq);
+  assert(credLoginRes.status === 200, 'POST /api/auth/login with test credentials returns 200 OK');
+
+  // Standard login with wrong password
+  const badLoginReq = new Request('http://localhost:3001/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'test@forgewell.ai', password: 'wrongpassword' }),
+  });
+  const badLoginRes = await dispatchApiRequest(badLoginReq);
+  assert(badLoginRes.status === 401, 'POST /api/auth/login with wrong password returns 401 UNAUTHORIZED');
+
+  // Authenticate protected endpoint with test token
+  const testToken = testLoginData.data?.token;
+  if (testToken) {
+    const authMeReq = new Request('http://localhost:3001/api/auth/me', {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${testToken}` },
+    });
+    const authMeRes = await dispatchApiRequest(authMeReq);
+    assert(authMeRes.status === 200, 'GET /api/auth/me succeeds with test token');
+    const authMeData: any = await authMeRes.json();
+    assert(authMeData.data?.user?.email === 'test@forgewell.ai', 'Authenticated session matches test user');
+  }
+
   console.log('\n=============================================');
   console.log(`TEST SUMMARY: ${passed} PASSED, ${failed} FAILED`);
   console.log('=============================================\n');

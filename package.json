@@ -11,6 +11,7 @@
     "server:dev": "node --experimental-strip-types server/index.ts",
     "server:start": "node --experimental-strip-types server/index.ts",
     "test:backend": "node --experimental-strip-types server/tests/run_tests.ts",
+    "seed:test-user": "node --experimental-strip-types server/scripts/seed_test_user.ts",
     "prisma:generate": "prisma generate",
     "typecheck:server": "tsc -p tsconfig.server.json"
   },

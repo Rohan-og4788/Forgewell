@@ -8,6 +8,7 @@ import { jsonResponse, errorResponse } from './lib/response.ts';
 import {
   handleRegister,
   handleLogin,
+  handleTestLogin,
   handleLogout,
   handleGetCurrentUser,
   handleForgotPassword,
@@ -149,6 +150,7 @@ export async function dispatchApiRequest(req: Request): Promise<Response> {
   // --- Auth Routes ---
   if (pathname === '/api/auth/register' && method === 'POST') return handleRegister(req);
   if (pathname === '/api/auth/login' && method === 'POST') return handleLogin(req);
+  if (pathname === '/api/auth/test-login' && (method === 'POST' || method === 'GET')) return handleTestLogin(req);
   if (pathname === '/api/auth/logout' && method === 'POST') return handleLogout();
   if (pathname === '/api/auth/me' && method === 'GET') return handleGetCurrentUser(req);
   if (pathname === '/api/auth/forgot-password' && method === 'POST') return handleForgotPassword(req);
